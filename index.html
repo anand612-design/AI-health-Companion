@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Health Companion</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f9fc;
+            color: #333;
+            display: flex;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+ 
+        /* Sidebar */
+        .sidebar {
+            width: 20%;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+        }
+
+        .sidebar h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #ecf0f1;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            color: #3498db;
+        }
+
+        /* Main Content */
+        .main-content {
+            width: 80%;
+            padding: 20px;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        header h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .notification {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        /* Dashboard Section */
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .health-score, .recommendations {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 48%;
+        }
+
+        .health-score .score {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        /* Progress Chart */
+        .progress-chart {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 200px;
+        }
+
+        /* Mood Tracker */
+        .mood-tracker {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .mood-options button {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .mood-options button[data-mood="happy"] {
+            background-color: #27ae60;
+            color: #fff;
+        }
+
+        .mood-options button[data-mood="neutral"] {
+            background-color: #f39c12;
+            color: #fff;
+        }
+
+        .mood-options button[data-mood="stressed"] {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        .mood-options button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h1>AI Health Companion</h1>
+            <ul>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="quotes.html">Mindfulness</a></li>
+                <li><a href="health-monitor.html">Health Monitor</a></li>
+                <li><a href="#Health Score">Health Score</a></li>
+                <li><a href="#settings">Settings</a></li>
+                <li><a href="#settings">About</a></li>
+                <li><a href="#settings">Contact</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header Section -->
+            <header>
+                <h2>Welcome, User</h2>
+                <div class="notification">Stay Hydrated! 💧</div>
+            </header>
+
+            <!-- Health Overview Section -->
+            <section id="dashboard" class="dashboard">
+                <div class="health-score">
+                    <h3>Your Health Score</h3>
+                    <div class="score">85</div>
+                </div>
+                <div class="recommendations">
+                    <h3>Today's Recommendations</h3>
+                    <ul>
+                        <li>Eat 3 servings of vegetables 🥦</li>
+                        <li>Take a 15-minute walk 🚶‍♂️</li>
+                        <li>Sleep at least 7 hours tonight 🛌</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Progress Chart Section -->
+            <section class="progress-chart">
+                <h3>Your Weekly Progress</h3>
+                <canvas id="progressChart"></canvas>
+            </section>
+
+            <!-- Mood Tracker Section -->
+            <section id="mood-tracker" class="mood-tracker">
+                <h3>How Are You Feeling Today?</h3>
+                <div class="mood-options">
+                    <button data-mood="happy">😊 Happy</button>
+                    <button data-mood="neutral">😐 Neutral</button>
+                    <button data-mood="stressed">😟 Stressed</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // JavaScript for Progress Chart
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        const progressChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Health Score',
+                    data: [80, 82, 85, 87, 86, 88, 90],
+                    borderColor: '#3498db',
+                    borderWidth: 2,
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    }
+                }
+            }
+        });
+
+        // Mood Tracker Interaction
+        document.querySelectorAll('.mood-options button').forEach(button => {
+            button.addEventListener('click', () => {
+                alert(`You selected: ${button.dataset.mood}`);
+            });
+        });
+    </script>
+</body>
+</html>
